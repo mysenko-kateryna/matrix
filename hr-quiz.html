@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Діагностика зон росту HR-фахівця</title>
+  <meta name="description" content="Безкоштовний тест: визначте свій рівень і зони росту як HR-фахівець за 3 хвилини">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box; margin: 0; padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+    }
+    :root {
+      --yellow: #e3b64b;
+      --green: #2f6f5e;
+      --coral: #e85d3a;
+      --ink: #1a1a1a;
+      --paper: #f5f1e8;
+      --muted: #6b6b6b;
+      --radius: 14px;
+    }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--paper); color: var(--ink); min-height: 100vh; }
+
+    /* HEADER */
+    .header {
+      background: var(--paper);
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+      padding: 14px 20px;
+      display: flex; align-items: center; gap: 10px;
+      position: sticky; top: 0; z-index: 10;
+    }
+    .logo-circle {
+      width: 32px; height: 32px; background: var(--yellow);
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 900; color: var(--ink); flex-shrink: 0;
+    }
+    .logo-text { font-size: 12px; font-weight: 700; line-height: 1.2; }
+    .logo-sub { font-size: 10px; color: var(--muted); font-weight: 400; }
+
+    /* INTRO */
+    #screen-intro { display: flex; flex-direction: column; }
+    .intro-hero {
+      background: linear-gradient(170deg, #0e2b1d 0%, #112f21 55%, #081a0f 100%);
+      color: #fff; padding: 40px 20px 48px;
+    }
+    .intro-tag {
+      display: inline-block; font-size: 0.58rem; font-weight: 800;
+      letter-spacing: 0.14em; text-transform: uppercase; color: var(--yellow);
+      background: rgba(227,182,75,0.13); border: 1px solid rgba(227,182,75,0.35);
+      border-radius: 20px; padding: 5px 13px; margin-bottom: 16px;
+    }
+    .intro-title { font-size: 1.9rem; font-weight: 900; line-height: 1.12; margin-bottom: 14px; }
+    .intro-title span { color: var(--yellow); }
+    .intro-desc { font-size: 0.85rem; color: rgba(255,255,255,0.72); line-height: 1.6; margin-bottom: 18px; }
+    .intro-note {
+      display: block; font-size: 0.78rem; font-weight: 700;
+      padding: 10px 14px; border-left: 3px solid var(--yellow);
+      background: rgba(227,182,75,0.09); border-radius: 0 8px 8px 0;
+      color: rgba(255,255,255,0.92); margin-bottom: 26px;
+    }
+    .intro-stats { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 26px; }
+    .intro-stat { font-size: 0.68rem; font-weight: 700; padding: 6px 12px; border-radius: 8px; }
+    .intro-stat.g { background: var(--green); color: #fff; }
+    .intro-stat.y { background: var(--yellow); color: var(--ink); }
+    .intro-stat.w { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.85); border: 1px solid rgba(255,255,255,0.18); }
+    .btn-start {
+      display: block; width: 100%; background: var(--yellow); color: var(--ink);
+      font-size: 1rem; font-weight: 800; text-align: center;
+      padding: 15px; border-radius: 12px; border: none; cursor: pointer;
+      box-shadow: 0 8px 28px rgba(227,182,75,0.35);
+      transition: opacity .15s, transform .15s;
+    }
+    .btn-start:hover { opacity: .9; transform: translateY(-1px); }
+
+    .intro-blocks { padding: 28px 20px; background: #fff; }
+    .intro-blocks-title { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); margin-bottom: 14px; }
+    .block-list { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .block-item { display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: var(--paper); border-radius: 10px; font-size: 0.72rem; font-weight: 600; }
+    .block-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
+
+    /* QUIZ */
+    #screen-quiz { display: none; }
+    .progress-wrap { background: rgba(0,0,0,0.06); position: sticky; top: 60px; z-index: 9; }
+    .progress-bar { height: 4px; }
+    .progress-fill { height: 100%; background: var(--green); border-radius: 2px; transition: width .4s ease; }
+    .progress-meta { display: flex; justify-content: space-between; padding: 6px 20px 4px; font-size: 0.6rem; color: var(--muted); font-weight: 600; }
+
+    .quiz-container { max-width: 540px; margin: 0 auto; padding: 28px 20px 60px; }
+    .quiz-block-chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 0.62rem; font-weight: 700; color: var(--green);
+      background: rgba(47,111,94,0.09); border-radius: 20px;
+      padding: 4px 12px; margin-bottom: 14px;
+    }
+    .quiz-block-chip::before { content: ''; display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--green); }
+    .quiz-question { font-size: 1.15rem; font-weight: 800; line-height: 1.35; margin-bottom: 22px; color: var(--ink); }
+    .options { display: flex; flex-direction: column; gap: 10px; }
+
+    .option {
+      display: flex; align-items: flex-start; gap: 0;
+      padding: 0; background: #fff;
+      border: 2px solid transparent; border-radius: var(--radius);
+      cursor: pointer; transition: border-color .15s, box-shadow .15s, background .15s;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06); text-align: left; overflow: hidden;
+    }
+    .option:hover { border-color: rgba(47,111,94,0.3); box-shadow: 0 4px 16px rgba(47,111,94,0.12); }
+    .option.selected { border-color: var(--green); background: #f0f8f5; box-shadow: 0 4px 16px rgba(47,111,94,0.18); }
+    .option-marker {
+      width: 4px; flex-shrink: 0; align-self: stretch;
+      background: rgba(0,0,0,0.07); transition: background .15s;
+    }
+    .option.selected .option-marker { background: var(--green); }
+    .option-body { padding: 14px 16px; }
+    .option-text { font-size: 0.82rem; line-height: 1.55; color: var(--ink); display: block; }
+
+    .quiz-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 28px; gap: 12px; }
+    .btn-back { font-size: 0.8rem; font-weight: 600; color: var(--muted); background: none; border: none; cursor: pointer; padding: 10px 0; }
+    .btn-next {
+      flex: 1; background: var(--green); color: #fff;
+      font-size: 0.9rem; font-weight: 800; padding: 14px 24px;
+      border-radius: 12px; border: none; cursor: pointer;
+      opacity: .35; pointer-events: none; transition: opacity .2s;
+    }
+    .btn-next.active { opacity: 1; pointer-events: all; }
+
+    /* RESULT */
+    #screen-result { display: none; }
+    .result-hero {
+      background: linear-gradient(170deg, #0e2b1d 0%, #112f21 55%, #081a0f 100%);
+      color: #fff; padding: 36px 20px 40px; text-align: center;
+    }
+    .result-badge {
+      display: inline-block; font-size: 0.58rem; font-weight: 800;
+      letter-spacing: .14em; text-transform: uppercase; color: var(--yellow);
+      background: rgba(227,182,75,0.15); border: 1px solid rgba(227,182,75,0.4);
+      border-radius: 20px; padding: 5px 14px; margin-bottom: 12px;
+    }
+    .result-level-name { font-size: 2.4rem; font-weight: 900; color: var(--yellow); line-height: 1.1; margin-bottom: 10px; }
+    .result-level-desc { font-size: 0.82rem; color: rgba(255,255,255,0.72); line-height: 1.6; max-width: 340px; margin: 0 auto; }
+
+    .result-body { padding: 24px 20px 48px; max-width: 540px; margin: 0 auto; }
+    .section-title { font-size: 0.62rem; font-weight: 800; text-transform: uppercase; letter-spacing: .12em; color: var(--muted); margin-bottom: 14px; }
+
+    .blocks-grid { display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
+    .block-result {
+      background: #fff; border-radius: var(--radius);
+      padding: 14px 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      border-left: 3px solid transparent;
+    }
+    .block-result.growth { border-left-color: var(--coral); }
+    .block-result.strong { border-left-color: var(--green); }
+    .block-result.na { border-left-color: #c8c4bc; opacity: .65; }
+
+    /* Опція "не дотичний" */
+    .option.not-applicable {
+      border: 2px dashed rgba(0,0,0,0.15);
+      background: transparent;
+      box-shadow: none;
+      margin-top: 4px;
+    }
+    .option.not-applicable:hover { border-color: rgba(0,0,0,0.28); background: rgba(0,0,0,0.02); box-shadow: none; }
+    .option.not-applicable.selected { border-color: var(--muted); border-style: solid; background: rgba(0,0,0,0.04); }
+    .option.not-applicable .option-marker { background: transparent; }
+    .option.not-applicable.selected .option-marker { background: var(--muted); }
+    .option.not-applicable .option-text { color: var(--muted); font-size: 0.78rem; font-style: italic; }
+    .block-result-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+    .block-result-name { font-size: 0.78rem; font-weight: 700; }
+    .block-result-tag {
+      font-size: 0.58rem; font-weight: 800; text-transform: uppercase;
+      letter-spacing: .06em; padding: 3px 9px; border-radius: 6px; color: #fff;
+    }
+    .block-result-tag.growth { background: var(--coral); }
+    .block-result-tag.strong { background: var(--green); }
+    .block-result-tag.mid { background: #5a9688; }
+    .block-bar-track { height: 6px; background: rgba(0,0,0,0.07); border-radius: 3px; overflow: hidden; }
+    .block-bar-fill { height: 100%; border-radius: 3px; transition: width .9s ease; }
+    .block-bar-fill.g { background: var(--green); }
+    .block-bar-fill.c { background: var(--coral); }
+    .block-bar-fill.m { background: #5a9688; }
+
+    .insights { margin-bottom: 28px; display: flex; flex-direction: column; gap: 10px; }
+    .insight {
+      background: #fff; border-radius: var(--radius);
+      padding: 14px 16px; font-size: 0.8rem; line-height: 1.55;
+      display: flex; gap: 10px; align-items: flex-start;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .insight-icon { font-size: 1rem; flex-shrink: 0; }
+
+    .cta-block {
+      background: linear-gradient(135deg, #0e2b1d, #1a4030);
+      border-radius: 18px; padding: 24px 20px; color: #fff; text-align: center;
+    }
+    .cta-label { font-size: 0.55rem; font-weight: 800; letter-spacing: .15em; text-transform: uppercase; color: var(--yellow); margin-bottom: 10px; }
+    .cta-title { font-size: 1.2rem; font-weight: 900; line-height: 1.2; margin-bottom: 10px; }
+    .cta-desc { font-size: 0.78rem; color: rgba(255,255,255,.7); line-height: 1.6; margin-bottom: 18px; }
+    .cta-chips { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-bottom: 20px; }
+    .cta-chip { font-size: 0.65rem; font-weight: 700; padding: 5px 10px; border-radius: 7px; }
+    .cta-chip.g { background: var(--green); color: #fff; }
+    .cta-chip.y { background: var(--yellow); color: var(--ink); }
+    .cta-chip.w { background: rgba(255,255,255,.1); color: rgba(255,255,255,.85); border: 1px solid rgba(255,255,255,.18); }
+    .btn-cta {
+      display: block; width: 100%; background: var(--yellow); color: var(--ink);
+      font-size: 1rem; font-weight: 800; padding: 16px; border-radius: 12px;
+      text-decoration: none; box-shadow: 0 8px 28px rgba(227,182,75,.35);
+      transition: opacity .15s, transform .15s;
+    }
+    .btn-cta:hover { opacity: .9; transform: translateY(-1px); }
+    .retake-btn {
+      display: block; text-align: center; margin-top: 20px;
+      font-size: 0.78rem; color: var(--muted); cursor: pointer;
+      background: none; border: none; text-decoration: underline;
+    }
+
+    @media (min-width: 600px) {
+      .intro-hero, .result-hero { padding: 60px 40px; }
+      .quiz-container, .result-body { padding: 40px 40px 80px; }
+      .intro-blocks { padding: 36px 40px; }
+      .block-list { grid-template-columns: repeat(3, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <div class="logo-circle">HR</div>
+  <div>
+    <div class="logo-text">HR. Час діяти!</div>
+    <div class="logo-sub">© Катерина Мисенко</div>
+  </div>
+</header>
+
+<!-- INTRO -->
+<div id="screen-intro">
+  <div class="intro-hero">
+    <span class="intro-tag">Безкоштовна діагностика</span>
+    <h1 class="intro-title">Де ваші <span>зони росту</span> як HR-фахівця?</h1>
+    <p class="intro-desc">12 запитань про реальну роботу – і ви побачите, які компетенції розвинені, а які потребують уваги. Результат одразу на екрані.</p>
+    <span class="intro-note">Без реєстрації. Без email. Тільки чесна діагностика.</span>
+    <div class="intro-stats">
+      <span class="intro-stat g">6 блоків HR-циклу</span>
+      <span class="intro-stat y">~3 хвилини</span>
+      <span class="intro-stat w">Результат одразу</span>
+    </div>
+    <button class="btn-start" onclick="startQuiz()">Пройти діагностику →</button>
+  </div>
+  <div class="intro-blocks">
+    <div class="intro-blocks-title">Що охоплює діагностика</div>
+    <div class="block-list">
+      <div class="block-item"><span class="block-dot"></span>Залучення</div>
+      <div class="block-item"><span class="block-dot"></span>Рекрутинг</div>
+      <div class="block-item"><span class="block-dot"></span>Адаптація</div>
+      <div class="block-item"><span class="block-dot"></span>Навчання і розвиток</div>
+      <div class="block-item"><span class="block-dot"></span>Утримання</div>
+      <div class="block-item"><span class="block-dot"></span>Офбординг</div>
+    </div>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<div id="screen-quiz">
+  <div class="progress-wrap">
+    <div class="progress-bar">
+      <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+    </div>
+    <div class="progress-meta">
+      <span id="progress-label">Питання 1 з 12</span>
+      <span id="progress-block">Залучення</span>
+    </div>
+  </div>
+  <div class="quiz-container">
+    <div class="quiz-block-chip" id="quiz-block-chip">Залучення</div>
+    <h2 class="quiz-question" id="quiz-question"></h2>
+    <div class="options" id="options-container"></div>
+    <div class="quiz-nav">
+      <button class="btn-back" id="btn-back" onclick="prevQ()">← Назад</button>
+      <button class="btn-next" id="btn-next" onclick="nextQ()">Далі →</button>
+    </div>
+  </div>
+</div>
+
+<!-- RESULT -->
+<div id="screen-result">
+  <div class="result-hero">
+    <div class="result-badge">Ваш рівень</div>
+    <div class="result-level-name" id="r-name"></div>
+    <p class="result-level-desc" id="r-desc"></p>
+  </div>
+  <div class="result-body">
+    <div class="section-title">Результати по блоках</div>
+    <div class="blocks-grid" id="blocks-grid"></div>
+    <div class="section-title">Головні висновки</div>
+    <div class="insights" id="insights"></div>
+    <div class="cta-block">
+      <div class="cta-label">Наступний крок</div>
+      <div class="cta-title">Матриця компетенцій HR-фахівця</div>
+      <p class="cta-desc">28 компетенцій з поведінковими проявами для кожного рівня – від Junior до Lead. Готовий інструмент для цілеспрямованого розвитку.</p>
+      <div class="cta-chips">
+        <span class="cta-chip g">28 компетенцій</span>
+        <span class="cta-chip y">4 рівні зрілості</span>
+        <span class="cta-chip w">Miro + Notion</span>
+      </div>
+      <a class="btn-cta" href="https://mysenko-kateryna.github.io/matrix/" target="_blank">Отримати матрицю →</a>
+    </div>
+    <button class="retake-btn" onclick="retake()">Пройти ще раз</button>
+  </div>
+</div>
+
+<script>
+// Питання: score 1=junior, 2=middle, 3=senior, 4=lead (НЕ відображається)
+const questions = [
+  // ЗАЛУЧЕННЯ
+  { block: "Залучення", q: "Що найкраще описує вашу роботу зі стратегією залучення кандидатів?", opts: [
+    { s:1, t:"Працюю за заданими каналами та інструментами, фіксую результати і дотримуюсь встановлених підходів." },
+    { s:3, t:"Сегментую аудиторії, визначаю пріоритетні групи та канали взаємодії з урахуванням ринку праці." },
+    { s:2, t:"Обираю канали для залучення під різні ролі, тестую підходи і аналізую їх ефективність." },
+    { s:4, t:"Визначаю стратегію залучення на рівні компанії, розподіляю ресурси та узгоджую з бізнес-цілями." }
+  ]},
+  { block: "Залучення", q: "Як ви розвиваєте бренд роботодавця та EVP?", opts: [
+    { s:3, t:"Формулюю EVP, визначаю позиціонування компанії на ринку праці, координую зовнішні комунікації." },
+    { s:1, t:"Підтримую активності з EVP за вказівкою, публікую матеріали у зовнішніх каналах." },
+    { s:4, t:"Визначаю стратегію бренду роботодавця на рівні бізнесу, інтегрую в корпоративну стратегію." },
+    { s:2, t:"Веду комунікацію з кандидатами, формую матеріали про компанію як роботодавця для різних каналів." }
+  ]},
+  // РЕКРУТИНГ
+  { block: "Рекрутинг", q: "Як ви ведете процес підбору персоналу?", opts: [
+    { s:2, t:"Самостійно веду повний цикл підбору, обираю методи оцінки і комунікую з hiring manager." },
+    { s:4, t:"Визначаю рекрутинг-стратегію компанії, відповідаю за стандарти підбору та employer brand." },
+    { s:1, t:"Проводжу первинний скринінг за шаблоном, координую логістику процесу під наглядом." },
+    { s:3, t:"Будую систему підбору, впроваджую аналітику, навчаю команду і покращую candidate experience." }
+  ]},
+  { block: "Рекрутинг", q: "Як ви підходите до інтерв'ю та оцінки кандидатів?", opts: [
+    { s:4, t:"Визначаю стандарти оцінки в компанії, навчаю команду проводити інтерв'ю, забезпечую об'єктивність." },
+    { s:1, t:"Проводжу скринінгові дзвінки за готовими питаннями, заповнюю стандартні форми оцінки." },
+    { s:3, t:"Розробляю методологію оцінки, адаптую інструменти під різні ролі, аналізую якість найму." },
+    { s:2, t:"Проводжу структуровані інтерв'ю, обираю методи оцінки залежно від ролі та рівня кандидата." }
+  ]},
+  // АДАПТАЦІЯ
+  { block: "Адаптація", q: "Як ви організовуєте адаптацію нових співробітників?", opts: [
+    { s:1, t:"Виконую базові процедури онбордингу за готовим сценарієм і чеклістом." },
+    { s:4, t:"Проектую адаптаційні програми під різні ролі та рівні, інтегрую онбординг з корпоративною культурою." },
+    { s:3, t:"Розробляю або вдосконалюю систему адаптації, аналізую її ефективність і впроваджую покращення." },
+    { s:2, t:"Координую процес адаптації, взаємодію з різними сторонами і відстежую прогрес нового співробітника." }
+  ]},
+  { block: "Адаптація", q: "Як ви підтримуєте комунікацію під час адаптаційного періоду?", opts: [
+    { s:2, t:"Регулярно комунікую з новим співробітником і менеджером, оперативно вирішую питання." },
+    { s:4, t:"Проектую досвід адаптації як частину employee experience, синхронізую зі стратегією компанії." },
+    { s:1, t:"Надсилаю вітальні листи, ознайомлюю з базовими документами і регламентами." },
+    { s:3, t:"Будую систему комунікації між новим співробітником, командою і менеджером, відстежую результати." }
+  ]},
+  // НАВЧАННЯ І РОЗВИТОК
+  { block: "Навчання і розвиток", q: "Як ви підходите до організації навчання співробітників?", opts: [
+    { s:3, t:"Будую L&D-систему, впроваджую кар'єрні треки, аналізую результати і ROI навчання." },
+    { s:1, t:"Організовую навчальні заходи за запитом, координую логістику, веду облік участі." },
+    { s:4, t:"Формую стратегію розвитку персоналу як частину бізнес-стратегії, відповідаю за управління талантами." },
+    { s:2, t:"Планую навчання з урахуванням потреб, відстежую прогрес і підтримую performance-процеси." }
+  ]},
+  { block: "Навчання і розвиток", q: "Як ви управляєте оцінкою ефективності (performance management)?", opts: [
+    { s:1, t:"Координую процес оцінки: збираю форми, нагадую про дедлайни і зводжу результати." },
+    { s:4, t:"Визначаю підхід до performance management на рівні компанії, узгоджую з бізнес-цілями та культурою." },
+    { s:2, t:"Супроводжую performance-розмови, допомагаю ставити цілі і давати конструктивний зворотний зв'язок." },
+    { s:3, t:"Розробляю або вдосконалюю систему оцінки, аналізую результати і формую рекомендації для менеджерів." }
+  ]},
+  // УТРИМАННЯ
+  { block: "Утримання", q: "Як ви працюєте із залученістю та wellbeing команди?", opts: [
+    { s:4, t:"Визначаю культурний фундамент і систему мотивації стратегічно, відповідаю за employee experience." },
+    { s:2, t:"Впроваджую wellbeing-ініціативи, слідкую за eNPS, підтримую корпоративну культуру." },
+    { s:1, t:"Збираю зворотний зв'язок, допомагаю організовувати командні заходи і активності." },
+    { s:3, t:"Аналізую організаційне здоров'я, системно працюю з ризиками утримання, управляю метриками." }
+  ]},
+  { block: "Утримання", q: "Як ви підходите до системи мотивації та внутрішніх комунікацій?", opts: [
+    { s:3, t:"Будую або вдосконалюю систему мотивації, розробляю внутрішні комунікаційні канали та формати." },
+    { s:1, t:"Підтримую поточні ініціативи, готую комунікаційні матеріали за запитом керівника." },
+    { s:2, t:"Реалізую внутрішні комунікаційні проекти, підтримую і розвиваю програми мотивації." },
+    { s:4, t:"Визначаю стратегію мотивації і внутрішніх комунікацій на рівні компанії, узгоджую з топменеджментом." }
+  ]},
+  // ОФБОРДИНГ
+  { block: "Офбординг", q: "Як ви організовуєте процес звільнення співробітників?", opts: [
+    { s:2, t:"Координую процес звільнення, слідкую за дотриманням процедур, забезпечую коректний вихід." },
+    { s:1, t:"Виконую базові процедури: оформлюю документи, координую передачу справ за чеклістом." },
+    { s:4, t:"Використовую офбординг як стратегічний інструмент управління репутацією і якістю HR-процесів." },
+    { s:3, t:"Аналізую тенденції звільнень, системно покращую процес і будую зв'язок з практиками утримання." }
+  ]},
+  { block: "Офбординг", q: "Як ви проводите exit-інтерв'ю та аналізуєте звільнення?", opts: [
+    { s:4, t:"Систематизую дані exit-інтерв'ю і використовую їх для стратегічних рішень щодо культури та утримання." },
+    { s:3, t:"Аналізую патерни звільнень, виявляю системні проблеми і формую рекомендації для менеджерів." },
+    { s:1, t:"Надсилаю стандартну анкету або фіксую базову причину звільнення у встановленій формі." },
+    { s:2, t:"Проводжу exit-інтерв'ю за структурованим форматом, збираю і фіксую детальну інформацію." }
+  ]}
+];
+
+const blocks = ["Залучення","Рекрутинг","Адаптація","Навчання і розвиток","Утримання","Офбординг"];
+
+const levelMeta = {
+  1: { name:"Junior", desc:"Ви на старті: опрацьовуєте базові процеси, навчаєтесь і формуєте фундамент. Ключове завдання – заглибитись у процеси і напрацювати впевненість у кожному блоці HR-циклу." },
+  2: { name:"Middle", desc:"Ви самостійний фахівець: ведете процеси, приймаєте рішення в межах своєї зони відповідальності. Наступний крок – системне мислення і вдосконалення процесів, а не лише їх виконання." },
+  3: { name:"Senior", desc:"Ви будуєте системи, а не просто ведете процеси. Маєте стратегічне мислення і вплив на результати команди. Розвиток – у стратегічному впливі на бізнес і розвитку людей навколо вас." },
+  4: { name:"Lead / Head", desc:"Ви на стратегічному рівні: визначаєте напрям, формуєте культуру і відповідаєте за HR як за бізнес-функцію. Ваш вплив виходить далеко за межі HR-відділу." }
+};
+
+let cur = 0;
+let answers = new Array(questions.length).fill(null); // stores score value 1-4
+let shuffles = []; // pre-shuffled indices per question
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+let questionOrder = [];
+
+function startQuiz() {
+  // Перемішуємо порядок питань
+  questionOrder = shuffle(questions.map((_, i) => i));
+  // Pre-shuffle варіанти відповідей для кожного питання
+  shuffles = questions.map(() => shuffle([0,1,2,3]));
+  document.getElementById('screen-intro').style.display = 'none';
+  document.getElementById('screen-quiz').style.display = 'block';
+  renderQ();
+}
+
+const NA = 0; // спеціальне значення "не дотичний"
+
+function renderQ() {
+  const qi = questionOrder[cur]; // реальний індекс питання
+  const q = questions[qi];
+  const total = questions.length;
+  const pct = (cur / total) * 100;
+
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-label').textContent = `Питання ${cur+1} з ${total}`;
+  document.getElementById('progress-block').textContent = q.block;
+  document.getElementById('quiz-block-chip').textContent = q.block;
+  document.getElementById('quiz-question').textContent = q.q;
+
+  const container = document.getElementById('options-container');
+  container.innerHTML = '';
+  const order = shuffles[qi];
+
+  // Звичайні варіанти (перемішані)
+  order.forEach(i => {
+    const opt = q.opts[i];
+    const btn = document.createElement('button');
+    btn.className = 'option' + (answers[cur] === opt.s ? ' selected' : '');
+    btn.innerHTML = `<div class="option-marker"></div><div class="option-body"><span class="option-text">${opt.t}</span></div>`;
+    btn.onclick = () => selectOpt(opt.s);
+    container.appendChild(btn);
+  });
+
+
+  // Опція "не дотичний"
+  const naBtn = document.createElement('button');
+  naBtn.className = 'option not-applicable' + (answers[cur] === NA ? ' selected' : '');
+  naBtn.innerHTML = `<div class="option-marker"></div><div class="option-body"><span class="option-text">Цей процес не входить до моєї зони відповідальності</span></div>`;
+  naBtn.onclick = () => selectOpt(NA);
+  container.appendChild(naBtn);
+
+  const nextBtn = document.getElementById('btn-next');
+  nextBtn.textContent = cur === total - 1 ? 'Показати результат →' : 'Далі →';
+  nextBtn.classList.toggle('active', answers[cur] !== null);
+  document.getElementById('btn-back').style.visibility = cur === 0 ? 'hidden' : 'visible';
+}
+
+function selectOpt(score) {
+  answers[cur] = score;
+  const allOpts = document.querySelectorAll('.option');
+  allOpts.forEach(el => el.classList.remove('selected'));
+
+  if (score === NA) {
+    allOpts[allOpts.length - 1].classList.add('selected');
+  } else {
+    const qi = questionOrder[cur];
+    const order = shuffles[qi];
+    const q = questions[qi];
+    allOpts.forEach((el, idx) => {
+      if (idx < order.length && q.opts[order[idx]].s === score) el.classList.add('selected');
+    });
+  }
+  document.getElementById('btn-next').classList.add('active');
+}
+
+function nextQ() {
+  if (answers[cur] === null) return;
+  if (cur < questions.length - 1) { cur++; renderQ(); window.scrollTo({top:60,behavior:'smooth'}); }
+  else showResult();
+}
+
+function prevQ() {
+  if (cur > 0) { cur--; renderQ(); window.scrollTo({top:60,behavior:'smooth'}); }
+}
+
+function showResult() {
+  document.getElementById('screen-quiz').style.display = 'none';
+  document.getElementById('screen-result').style.display = 'block';
+  window.scrollTo({top:0,behavior:'smooth'});
+
+  // Score per block: NA(0) = не дотичний, null = не відповів
+  const blockScores = blocks.map(b => {
+    const qs = answers.filter((_, i) => questions[questionOrder[i]].block === b);
+    const valid = qs.filter(s => s !== NA && s !== null);
+    if (valid.length === 0) return null;
+    return valid.reduce((a,c) => a+c, 0) / valid.length;
+  });
+
+  const validScores = blockScores.filter(s => s !== null);
+  const overall = validScores.length > 0
+    ? Math.round(validScores.reduce((a,c) => a+c, 0) / validScores.length)
+    : 2;
+  const meta = levelMeta[Math.max(1, Math.min(4, overall))];
+
+  document.getElementById('r-name').textContent = meta.name;
+  document.getElementById('r-desc').textContent = meta.desc;
+
+  // Blocks
+  const grid = document.getElementById('blocks-grid');
+  grid.innerHTML = '';
+  const growthBlocks = [], strongBlocks = [];
+
+  blocks.forEach((b, i) => {
+    const avg = blockScores[i];
+
+    if (avg === null) {
+      const el = document.createElement('div');
+      el.className = 'block-result na';
+      el.innerHTML = `
+        <div class="block-result-top">
+          <span class="block-result-name">${b}</span>
+          <span class="block-result-tag" style="background:#a0a09a">Не дотичний</span>
+        </div>
+        <div class="block-bar-track"><div class="block-bar-fill" style="width:4%;background:#ccc"></div></div>`;
+      grid.appendChild(el);
+      return;
+    }
+
+    const isGrowth = avg < 2.5;
+    const isStrong = avg >= 3;
+    if (isGrowth) growthBlocks.push(b);
+    if (isStrong) strongBlocks.push(b);
+
+    const pct = ((avg - 1) / 3) * 100;
+    let tagClass = 'mid', tagText = 'Розвивається', barClass = 'm';
+    if (isGrowth) { tagClass = 'growth'; tagText = 'Зона росту'; barClass = 'c'; }
+    else if (isStrong) { tagClass = 'strong'; tagText = 'Сильна зона'; barClass = 'g'; }
+
+    const el = document.createElement('div');
+    el.className = `block-result ${isGrowth ? 'growth' : isStrong ? 'strong' : ''}`;
+    el.innerHTML = `
+      <div class="block-result-top">
+        <span class="block-result-name">${b}</span>
+        <span class="block-result-tag ${tagClass}">${tagText}</span>
+      </div>
+      <div class="block-bar-track">
+        <div class="block-bar-fill ${barClass}" style="width:${Math.max(pct,8)}%"></div>
+      </div>`;
+    grid.appendChild(el);
+  });
+
+  // Insights
+  const ins = document.getElementById('insights');
+  ins.innerHTML = '';
+  const items = [];
+
+  if (strongBlocks.length > 0)
+    items.push({icon:'💪', html:`Ваші сильні сторони: <strong>${strongBlocks.join(', ')}</strong>. Тут ви мислите системно і маєте реальний вплив.`});
+  if (growthBlocks.length > 0)
+    items.push({icon:'🎯', html:`Зони росту: <strong>${growthBlocks.join(', ')}</strong>. Саме ці блоки потребують розвитку для виходу на наступний рівень.`});
+  items.push({icon:'📋', html:`Матриця компетенцій описує поведінкові прояви для кожного рівня в усіх 28 компетенціях – так ви побачите конкретно, що розвивати.`});
+
+  items.forEach(item => {
+    const el = document.createElement('div');
+    el.className = 'insight';
+    el.innerHTML = `<span class="insight-icon">${item.icon}</span><span>${item.html}</span>`;
+    ins.appendChild(el);
+  });
+}
+
+function retake() {
+  cur = 0;
+  answers = new Array(questions.length).fill(null);
+  document.getElementById('screen-result').style.display = 'none';
+  document.getElementById('screen-intro').style.display = 'flex';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
